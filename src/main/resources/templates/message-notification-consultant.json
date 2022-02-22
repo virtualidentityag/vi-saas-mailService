@@ -6,8 +6,6 @@
 		[
 			"plz",
 			"url",
-			"name",
-			"urlimpressum",
-			"urldatenschutz"
+			"name"
 		]
 }

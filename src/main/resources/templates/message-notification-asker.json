@@ -5,9 +5,6 @@
 	"templateDataFields": 
 		[
 			"consultantName",
-			"askerName",
-			"url",
-			"urlimpressum",
-			"urldatenschutz"
+			"askerName"
 		]
 }

@@ -6,9 +6,6 @@
 			"beratungsstelle",
 			"plz",
 			"url",
-			"name",
-			"url",
-			"urlimpressum",
-			"urldatenschutz"
+			"name"
 		]
 }

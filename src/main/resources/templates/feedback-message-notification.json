@@ -6,9 +6,6 @@
 		[
 			"name_sender",
 			"name_recipient",
-			"name_user",
-			"url",
-			"urlimpressum",
-			"urldatenschutz"
+			"name_user"
 		]
 }
