@@ -1,24 +1,13 @@
 {
 	"htmlTemplateFilename":"free-text.html",
 	"subject":"${subject}",
-	"templateImages" : [
-		{
-			"filename":"caritas-logo.jpg",
-			"filetype":"image/jpg"
-		},
-		{
-			"filename":"illustration-bottom.png",
-			"filetype":"image/png"
-		},
-		{
-			"filename":"illustration-top.png",
-			"filetype":"image/png"
-		}		
-	],
+	"templateImages" : [],
 	"templateDataFields": 
 		[
 			"subject",
 			"text",
-			"url"
+			"url",
+			"urlimpressum",
+			"urldatenschutz"
 		]
 }
