@@ -17,7 +17,7 @@ public class LogService {
   /**
    * Logs a an error with exception.
    *
-   * @param message an error message
+   * @param message   an error message
    * @param exception the exception
    */
   public static void logError(String message, Exception exception) {
@@ -65,7 +65,7 @@ public class LogService {
   /**
    * Log a warning message.
    *
-   * @param status http status to be logged
+   * @param status    http status to be logged
    * @param exception the exception to be logged
    */
   public static void logWarn(HttpStatus status, Exception exception) {
@@ -82,5 +82,16 @@ public class LogService {
     LOGGER.warn("MailService API: {}: ",
         org.apache.commons.lang3.exception.ExceptionUtils.getStackTrace(exception));
   }
+
+  /**
+   * Log an info message.
+   *
+   * @param message the message to log
+   */
+  public static void logInfo(String message) {
+    LOGGER.info("MailService API: {}", message);
+  }
+
+
 
 }

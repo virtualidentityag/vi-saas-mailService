@@ -96,6 +96,7 @@ public class MailService {
 
   private void sendHtmlMail(MailDTO mail, TemplateDescription templateDescription,
       String processedHtmlTemplate, String subject) {
+    LogService.logInfo(String.format("Prepared email of type %s to send.", mail.getTemplate()));
     try {
       if (useSmtp) {
         smtpMailService.prepareAndSendHtmlMail(mail.getEmail(), subject,
@@ -104,6 +105,7 @@ public class MailService {
         exchangeMailService.prepareAndSendHtmlMail(mail.getEmail(), subject,
             processedHtmlTemplate, templateDescription.getTemplateImages());
       }
+      LogService.logInfo(String.format("Email of type %s successfully send.", mail.getTemplate()));
     } catch (SmtpMailServiceException | ExchangeMailServiceException e) {
       throw new InternalServerErrorException(
           String.format("Could not send HTML mail: %s", e.getMessage()), e);
