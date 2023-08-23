@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.10.0](https://github.com/CaritasDeutschland/caritas-onlineBeratung-mailService/compare/v1.9.0...v1.10.0) (2023-08-23)
+
+
+### Features
+
+* add config and template of direct-enquiry notifications ([17d8d9d](https://github.com/CaritasDeutschland/caritas-onlineBeratung-mailService/commit/17d8d9d1358f7a5fe01a1646613ced72579f9534))
+* updated docker workflow with proper tagging ([2e1cb2c](https://github.com/CaritasDeutschland/caritas-onlineBeratung-mailService/commit/2e1cb2cda43f9f3f8a08ccfe05b8e15dca1feefb))
+
+
+### Bug Fixes
+
+* adjust phrasing of direct enquiry ([95470b5](https://github.com/CaritasDeutschland/caritas-onlineBeratung-mailService/commit/95470b5b5c1410a13d5455bb57fd9136a4ef0901))
+* adjust phrasing of direct enquiry ([060fd8d](https://github.com/CaritasDeutschland/caritas-onlineBeratung-mailService/commit/060fd8d0c659c51de72a23120f2b33632e607125))
+* workflow file ([d1a0019](https://github.com/CaritasDeutschland/caritas-onlineBeratung-mailService/commit/d1a0019323a9eff5d159f465be6b8cc774144bd3))
+
 ## [1.9.0](https://github.com/CaritasDeutschland/caritas-onlineBeratung-mailService/compare/v1.7.0...v1.9.0) (2022-11-14)
 
 
