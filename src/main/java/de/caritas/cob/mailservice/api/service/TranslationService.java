@@ -4,6 +4,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.caritas.cob.mailservice.api.model.Dialect;
 import de.caritas.cob.mailservice.config.apiclient.TranlationMangementServiceApiClient;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -23,6 +26,8 @@ import org.springframework.web.client.HttpClientErrorException;
 @Slf4j
 public class TranslationService {
 
+  private static final String TEMPLATE_CUSTOM_TRANSLATIONS_DIR = "i18n/";
+
   @Value("${weblate.api.url}")
   private String apiUrl;
 
@@ -34,6 +39,12 @@ public class TranslationService {
 
   @Value("${weblate.component}")
   private String component;
+
+  @Value("${template.custom.translations.path}")
+  private String customTranslationsPath;
+
+  @Value("${template.use.custom.translations.path}")
+  private boolean useCustomResourcesPath;
 
   private final  @NonNull TranlationMangementServiceApiClient tranlationMangementServiceApiClient;
 
@@ -89,7 +100,7 @@ public class TranslationService {
       if (HttpStatus.NOT_FOUND.equals(e.getStatusCode())) {
         log.warn("Translations for component {}, language {} not found in weblate, returning default translations", component,
             languageCode);
-        return fetchDefaultTranslations(component, languageCode);
+        return fetchDefaultTranslations(languageCode);
       } else {
         log.error("Error while fetching translations from translation management service", e);
         throw e;
@@ -97,9 +108,11 @@ public class TranslationService {
     }
   }
 
-  private String fetchDefaultTranslations(String translationComponentName, String languageCode) {
-    var inputStream = TranslationService.class.getResourceAsStream(
-        getTranslationFilename(translationComponentName + "." + languageCode));
+  private String fetchDefaultTranslations(String languageCode) {
+    var inputStream =
+            useCustomResourcesPath ? buildStreamForExternalPath(languageCode)
+                    : getClass()
+                    .getResourceAsStream(getTranslationFilename(component + "." + languageCode));
     if (inputStream == null) {
       return "{}";
     }
@@ -110,7 +123,17 @@ public class TranslationService {
     } catch (IOException ex) {
       throw new IllegalStateException(String.format(
           "Json file with translations could not be loaded, translation component name: %s",
-          translationComponentName), ex);
+          component), ex);
+    }
+  }
+
+  private FileInputStream buildStreamForExternalPath(String languageCode) {
+    try {
+      return new FileInputStream(customTranslationsPath + TEMPLATE_CUSTOM_TRANSLATIONS_DIR + component.toLowerCase() + "." + languageCode + ".json");
+    } catch (FileNotFoundException e) {
+      log.warn("Translations for component {}, language {} not found in external path {}, returning default translations", component,
+              languageCode, customTranslationsPath + TEMPLATE_CUSTOM_TRANSLATIONS_DIR);
+      return null;
     }
   }
 
