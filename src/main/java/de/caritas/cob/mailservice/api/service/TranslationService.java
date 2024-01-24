@@ -3,21 +3,18 @@ package de.caritas.cob.mailservice.api.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.caritas.cob.mailservice.api.model.Dialect;
-import de.caritas.cob.mailservice.config.apiclient.TranlationMangementServiceApiClient;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.List;
+import de.caritas.cob.mailservice.config.apiclient.TranslationManagementServiceApiClient;
 import java.util.Map;
 import java.util.Optional;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.ResourceAccessException;
 
 @Service
 @Slf4j
@@ -35,15 +32,17 @@ public class TranslationService {
   @Value("${weblate.component}")
   private String component;
 
-  private final  @NonNull TranlationMangementServiceApiClient tranlationMangementServiceApiClient;
+  @Value("${translation.management.system.enabled}")
+  private boolean translationManagementSystemEnabled;
 
-  public TranslationService(TranlationMangementServiceApiClient tranlationMangementServiceApiClient) {
-    this.tranlationMangementServiceApiClient = tranlationMangementServiceApiClient;
-  }
+  private final @NonNull TranslationManagementServiceApiClient translationManagementServiceApiClient;
 
-  @Cacheable(value = "translations")
-  public Map<String, String> fetchTranslations(String languageCode) {
-    return this.fetchTranslations(languageCode, Dialect.FORMAL);
+  private final @NonNull DefaultTranslationsService defaultTranslationsService;
+
+  public TranslationService(
+      TranslationManagementServiceApiClient translationManagementServiceApiClient, DefaultTranslationsService defaultTranslationsService) {
+    this.translationManagementServiceApiClient = translationManagementServiceApiClient;
+    this.defaultTranslationsService = defaultTranslationsService;
   }
 
   @Cacheable(value = "translations")
@@ -63,7 +62,8 @@ public class TranslationService {
     log.info("Evicting translations cache");
   }
 
-  private Map<String, String> fetchTranslationAsMap(String languageCode, Dialect dialect) throws JsonProcessingException {
+  private Map<String, String> fetchTranslationAsMap(String languageCode, Dialect dialect)
+      throws JsonProcessingException {
     String translations = fetchTranslationsAsString(languageCode, dialect);
     ObjectMapper mapper = new ObjectMapper();
     return mapper.readValue(translations, Map.class);
@@ -76,47 +76,43 @@ public class TranslationService {
       var result = fetchTranslationAsMap(languageCode, dialect);
       return result.isEmpty() ? Optional.empty() : Optional.of(result);
     } catch (JsonProcessingException e) {
-      log.warn("Error while processing json file with translations. Returning empty translations", e);
+      log.warn("Error while processing json file with translations. Returning empty translations",
+          e);
       return Optional.empty();
     }
   }
 
   private String fetchTranslationsAsString(String languageCode, Dialect dialect) {
+    return fetchDefaultTranslationsFromTranslationsManagementSystem(languageCode, dialect);
+  }
+
+  private String fetchDefaultTranslationsFromTranslationsManagementSystem(String languageCode, Dialect dialect) {
     try {
-      return tranlationMangementServiceApiClient.tryFetchTranslationsFromTranslationManagementService(project, component,
-          languageCode, dialect);
+      log.info("Fetching translations. Translation management system enabled value: {}",
+          translationManagementSystemEnabled);
+      return translationManagementSystemEnabled ? translationManagementServiceApiClient.tryFetchTranslationsFromTranslationManagementService(
+          project, component,
+          languageCode, dialect) : defaultTranslationsService.fetchDefaultTranslations(component, languageCode,
+              dialect);
     } catch (HttpClientErrorException e) {
       if (HttpStatus.NOT_FOUND.equals(e.getStatusCode())) {
-        log.warn("Translations for component {}, language {} not found in weblate, returning default translations", component,
+        log.warn(
+            "Translations for component {}, language {} not found in weblate, returning default translations",
+            component,
             languageCode);
-        return fetchDefaultTranslations(component, languageCode);
+        return defaultTranslationsService.fetchDefaultTranslations(component, languageCode,
+            dialect);
       } else {
         log.error("Error while fetching translations from translation management service", e);
         throw e;
       }
+    } catch (ResourceAccessException ex) {
+      log.error("ResourceAccessException error while fetching translations from translation management service. Will fallback to resolve default translations.");
+      log.debug("Exception details: ", ex);
+      return defaultTranslationsService.fetchDefaultTranslations(component, languageCode, dialect);
     }
   }
 
-  private String fetchDefaultTranslations(String translationComponentName, String languageCode) {
-    var inputStream = TranslationService.class.getResourceAsStream(
-        getTranslationFilename(translationComponentName + "." + languageCode));
-    if (inputStream == null) {
-      return "{}";
-    }
-    try {
-      final List<String> fileLines = IOUtils
-          .readLines(inputStream, StandardCharsets.UTF_8.displayName());
-      return String.join("", fileLines);
-    } catch (IOException ex) {
-      throw new IllegalStateException(String.format(
-          "Json file with translations could not be loaded, translation component name: %s",
-          translationComponentName), ex);
-    }
-  }
-
-  private String getTranslationFilename(String templateName) {
-    return "/i18n/" + templateName.toLowerCase() + ".json";
-  }
 
   private class TranslationServiceException extends RuntimeException {
 

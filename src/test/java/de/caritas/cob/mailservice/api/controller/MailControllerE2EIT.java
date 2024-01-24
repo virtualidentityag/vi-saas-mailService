@@ -14,7 +14,7 @@ import de.caritas.cob.mailservice.api.model.LanguageCode;
 import de.caritas.cob.mailservice.api.model.MailDTO;
 import de.caritas.cob.mailservice.api.model.MailsDTO;
 import de.caritas.cob.mailservice.api.model.TemplateDataDTO;
-import de.caritas.cob.mailservice.config.apiclient.TranlationMangementServiceApiClient;
+import de.caritas.cob.mailservice.config.apiclient.TranslationManagementServiceApiClient;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.Cookie;
@@ -57,7 +57,7 @@ class MailControllerE2EIT {
   private JavaMailSender javaMailSender;
 
   @MockBean
-  private TranlationMangementServiceApiClient tranlationMangementServiceApiClient;
+  private TranslationManagementServiceApiClient translationManagementServiceApiClient;
 
   @Captor
   private ArgumentCaptor<MimeMessagePreparator> mimeMessagePrepCaptor;
@@ -67,8 +67,7 @@ class MailControllerE2EIT {
 
   @BeforeEach
   void setUp() {
-    Mockito.doThrow(new HttpClientErrorException(HttpStatus.NOT_FOUND)).when(
-        tranlationMangementServiceApiClient).tryFetchTranslationsFromTranslationManagementService(
+    Mockito.doThrow(new HttpClientErrorException(HttpStatus.NOT_FOUND)).when(translationManagementServiceApiClient).tryFetchTranslationsFromTranslationManagementService(
         anyString(), anyString(), anyString(), any(Dialect.class));
   }
 
@@ -237,7 +236,7 @@ class MailControllerE2EIT {
     var email = new MailDTO();
     email.setEmail(RandomStringUtils.randomAlphanumeric(32));
     email.setTemplate("reassign-confirmation-notification");
-    email.setDialect(Dialect.INFORMAL);
+    email.setDialect(Dialect.FORMAL);
 
     var nameRecipient = new TemplateDataDTO()
         .key("name_recipient")
