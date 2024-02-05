@@ -2,6 +2,49 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.11.0](https://github.com/CaritasDeutschland/caritas-onlineBeratung-mailService/compare/v1.10.0...v1.11.0) (2024-02-05)
+
+
+### Features
+
+* add caching ([c36c27e](https://github.com/CaritasDeutschland/caritas-onlineBeratung-mailService/commit/c36c27ee258b0a3dfbfe37a7761facaf31876b82))
+* add caching ([7eaa78d](https://github.com/CaritasDeutschland/caritas-onlineBeratung-mailService/commit/7eaa78d0f7ac35a6c0f3ecf22958c47201435f83))
+* add more keys ([0d120b6](https://github.com/CaritasDeutschland/caritas-onlineBeratung-mailService/commit/0d120b6bfdc7be1c1952c014dd7a28949891800b))
+* add more keys ([4eedb55](https://github.com/CaritasDeutschland/caritas-onlineBeratung-mailService/commit/4eedb55d38eef53be64fd95c25a27d94426f02dc))
+* add more keys and default values ([7003f0f](https://github.com/CaritasDeutschland/caritas-onlineBeratung-mailService/commit/7003f0fccd5771ee62f1c93c93cfa8ab1a86d4c7))
+* add more keys and default values ([57f425c](https://github.com/CaritasDeutschland/caritas-onlineBeratung-mailService/commit/57f425cef289e4ece4f691909471a5f9a86dcdda))
+* OB-8353 ([12d1ef5](https://github.com/CaritasDeutschland/caritas-onlineBeratung-mailService/commit/12d1ef5c7ba02d785ebc0c039c4d9448963dbe97))
+* OB-8353 ([b5404a8](https://github.com/CaritasDeutschland/caritas-onlineBeratung-mailService/commit/b5404a87bfd62a73754253feb67b0165dab4ba39))
+* OB-8353 ([1c0b211](https://github.com/CaritasDeutschland/caritas-onlineBeratung-mailService/commit/1c0b2116b19ba63df8552133f71f5d077857d9fb))
+* OB-8353 ([1b16e08](https://github.com/CaritasDeutschland/caritas-onlineBeratung-mailService/commit/1b16e087a405330e32b92f7f2f391a4427cb160a))
+* OB-8353 ([98e052d](https://github.com/CaritasDeutschland/caritas-onlineBeratung-mailService/commit/98e052d5e85b0bf6f9ff04aeaa3846fe3dfc21f6))
+* OB-8353 ([0489c8a](https://github.com/CaritasDeutschland/caritas-onlineBeratung-mailService/commit/0489c8a2e0985fc0ff7d78ce1d32ee0dc6d99a69))
+* OB-8353 ([57516ee](https://github.com/CaritasDeutschland/caritas-onlineBeratung-mailService/commit/57516eef31484a6c9f161ce7d7fafbfa4abfe9bb))
+* TSYSTEMS-101 ([afc8a63](https://github.com/CaritasDeutschland/caritas-onlineBeratung-mailService/commit/afc8a633ca9b96885aa2759fb064efabce6b6563))
+* TSYSTEMS-101 ([42f18db](https://github.com/CaritasDeutschland/caritas-onlineBeratung-mailService/commit/42f18db2ad179d4b28e0a9e1206dbe46f14fe2a7))
+* TSYSTEMS-101 ([acbf5bb](https://github.com/CaritasDeutschland/caritas-onlineBeratung-mailService/commit/acbf5bb02f45e0c6a5b271b2a7a0d5da7af7527a))
+* weblate integration ([6b481ca](https://github.com/CaritasDeutschland/caritas-onlineBeratung-mailService/commit/6b481ca1ef9e4080e22595714a0ab7ba2c53aa68))
+* weblate integration ([91290c4](https://github.com/CaritasDeutschland/caritas-onlineBeratung-mailService/commit/91290c411be0819853fe0b755dc68a61f24db86d))
+* weblate integration ([cf11913](https://github.com/CaritasDeutschland/caritas-onlineBeratung-mailService/commit/cf1191336f16acc9acf110aa8a39f8ccb1d5b1ea))
+
+
+### Bug Fixes
+
+*  informal language ([d40b088](https://github.com/CaritasDeutschland/caritas-onlineBeratung-mailService/commit/d40b088a7f05f95525c52357607a8f7f4ca9030e))
+* add fallback logic in case informal file not found ([08bd471](https://github.com/CaritasDeutschland/caritas-onlineBeratung-mailService/commit/08bd471c045664c32feb083247f031d401252bf5))
+* added informal language ([d89954e](https://github.com/CaritasDeutschland/caritas-onlineBeratung-mailService/commit/d89954ee44b7b0b9d79ffd651495e072a5a1f143))
+* added informal language ([32a6e05](https://github.com/CaritasDeutschland/caritas-onlineBeratung-mailService/commit/32a6e05496e0e4ae3dc4096d86870c33c07075c3))
+* added informal language ([543b806](https://github.com/CaritasDeutschland/caritas-onlineBeratung-mailService/commit/543b80630217550c807c74604e447f8305b384e9))
+* code review comments ([39ac51d](https://github.com/CaritasDeutschland/caritas-onlineBeratung-mailService/commit/39ac51d8888d19762e88a72282d9ad88e2b9ee8d))
+* code review comments ([38b26f4](https://github.com/CaritasDeutschland/caritas-onlineBeratung-mailService/commit/38b26f473cd17d6d16c55094f883387ab1aa9b7b))
+* dockerfile ([fdc5bda](https://github.com/CaritasDeutschland/caritas-onlineBeratung-mailService/commit/fdc5bdaf4cb38cc0cbd795713d2f5032836852a0))
+* fix invalid path to fetch translations ([e549700](https://github.com/CaritasDeutschland/caritas-onlineBeratung-mailService/commit/e549700624582d9a28d3f711be6e4fbdd060f468))
+* informal language ([401d53c](https://github.com/CaritasDeutschland/caritas-onlineBeratung-mailService/commit/401d53c074fe4a21d057fbf586fcd35648477a74))
+* informal language ([5446588](https://github.com/CaritasDeutschland/caritas-onlineBeratung-mailService/commit/5446588e2b91df71c793c31845d2bea721ab79d3))
+* potential NPE ([161800d](https://github.com/CaritasDeutschland/caritas-onlineBeratung-mailService/commit/161800d49c0871981aaee75a0d6ddbe8e6fc3998))
+* remove not needed endpoint ([91f114b](https://github.com/CaritasDeutschland/caritas-onlineBeratung-mailService/commit/91f114b2c57da51370e84e8b8c71720daf23afa4))
+* typo ([82b45b7](https://github.com/CaritasDeutschland/caritas-onlineBeratung-mailService/commit/82b45b7550c124fded2f60b3fad3c890270ae614))
+
 ## [1.10.0](https://github.com/CaritasDeutschland/caritas-onlineBeratung-mailService/compare/v1.9.0...v1.10.0) (2023-08-23)
 
 
