@@ -29,5 +29,4 @@ public class SmtpMailServiceException extends Exception {
   public SmtpMailServiceException(String message) {
     super(message);
   }
-
 }

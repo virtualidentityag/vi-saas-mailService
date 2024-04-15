@@ -13,6 +13,5 @@ import lombok.Setter;
 @Builder
 public class SubjectDescription {
 
-  String  key;
-
+  String key;
 }

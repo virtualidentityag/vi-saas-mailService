@@ -8,17 +8,13 @@ import org.jsoup.nodes.Document.OutputSettings;
 import org.jsoup.safety.Whitelist;
 import org.springframework.stereotype.Component;
 
-/**
- * Helper class
- *
- */
+/** Helper class */
 @Component
 public class Helper {
 
   /**
-   * 
    * Remove HTML code from a text (XSS-Protection)
-   * 
+   *
    * @param text
    * @return the given text without html
    */

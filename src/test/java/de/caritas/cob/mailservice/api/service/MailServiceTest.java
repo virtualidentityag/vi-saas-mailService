@@ -20,7 +20,6 @@ import de.caritas.cob.mailservice.api.exception.TemplateServiceException;
 import de.caritas.cob.mailservice.api.helper.TemplateDataConverter;
 import de.caritas.cob.mailservice.api.mailtemplate.TemplateDescription;
 import de.caritas.cob.mailservice.api.model.ErrorMailDTO;
-import de.caritas.cob.mailservice.api.model.LanguageCode;
 import de.caritas.cob.mailservice.api.model.MailDTO;
 import de.caritas.cob.mailservice.api.model.MailsDTO;
 import de.caritas.cob.mailservice.api.model.TemplateDataDTO;
@@ -44,23 +43,17 @@ public class MailServiceTest {
   private final String ERROR_RECIPIENTS = "name@domain.de";
   private final String FIELD_NAME_USE_SMTP = "useSmtp";
 
-  @InjectMocks
-  private MailService mailService;
+  @InjectMocks private MailService mailService;
 
-  @Mock
-  private SmtpMailService smtpMailService;
+  @Mock private SmtpMailService smtpMailService;
 
-  @Mock
-  private ExchangeMailService exchangeMailService;
+  @Mock private ExchangeMailService exchangeMailService;
 
-  @Mock
-  private TemplateDescriptionService templateDescriptionService;
+  @Mock private TemplateDescriptionService templateDescriptionService;
 
-  @Mock
-  private TemplateService templateService;
+  @Mock private TemplateService templateService;
 
-  @Mock
-  private TemplateDataConverter templateDataConverter;
+  @Mock private TemplateDataConverter templateDataConverter;
 
   @Test
   public void sendErrorMail_Should_SendErrorMail_When_ErrorRecipientIsSetAndUsingExchange()
@@ -69,8 +62,8 @@ public class MailServiceTest {
     ReflectionTestUtils.setField(mailService, FIELD_NAME_USE_SMTP, false);
 
     mailService.sendErrorMail(ERROR_MESSAGE);
-    verify(exchangeMailService, atLeastOnce()).prepareAndSendTextMail(eq(ERROR_RECIPIENTS),
-        Mockito.anyString(), Mockito.anyString());
+    verify(exchangeMailService, atLeastOnce())
+        .prepareAndSendTextMail(eq(ERROR_RECIPIENTS), Mockito.anyString(), Mockito.anyString());
   }
 
   @Test
@@ -80,8 +73,8 @@ public class MailServiceTest {
     ReflectionTestUtils.setField(mailService, FIELD_NAME_USE_SMTP, true);
 
     mailService.sendErrorMail(ERROR_MESSAGE);
-    verify(smtpMailService, atLeastOnce()).prepareAndSendTextMail(eq(ERROR_RECIPIENTS),
-        Mockito.anyString(), Mockito.anyString());
+    verify(smtpMailService, atLeastOnce())
+        .prepareAndSendTextMail(eq(ERROR_RECIPIENTS), Mockito.anyString(), Mockito.anyString());
   }
 
   @Test
@@ -95,40 +88,42 @@ public class MailServiceTest {
 
   @Test
   public void sendHtmlMails_Should_sendHtmlMails_When_MailHasAddressAndUsingExchange()
-      throws SecurityException, ExchangeMailServiceException, TemplateDescriptionServiceException, TemplateServiceException {
+      throws SecurityException, ExchangeMailServiceException, TemplateDescriptionServiceException,
+          TemplateServiceException {
     ReflectionTestUtils.setField(mailService, "errorRecipients", ERROR_RECIPIENTS);
     ReflectionTestUtils.setField(mailService, FIELD_NAME_USE_SMTP, false);
     when(templateDescriptionService.getTemplateDescription(any()))
         .thenReturn(Optional.of(new TemplateDescription()));
-    when(templateService.render(any(), any(), any()))
-        .thenReturn(Optional.of("success"));
+    when(templateService.render(any(), any(), any())).thenReturn(Optional.of("success"));
 
     MailsDTO mailsDTO = new MailsDTO().mails(singletonList(createMailDTO()));
 
     mailService.sendHtmlMails(mailsDTO);
-    verify(exchangeMailService, atLeastOnce()).prepareAndSendHtmlMail(eq(EMAIL),
-        any(), eq("success"), any());
+    verify(exchangeMailService, atLeastOnce())
+        .prepareAndSendHtmlMail(eq(EMAIL), any(), eq("success"), any());
   }
 
   private MailDTO createMailDTO() {
-    return new MailDTO().template("template").email(EMAIL).templateData(
-        singletonList(new TemplateDataDTO().key("key").value("value")));
+    return new MailDTO()
+        .template("template")
+        .email(EMAIL)
+        .templateData(singletonList(new TemplateDataDTO().key("key").value("value")));
   }
 
   @Test
   public void sendHtmlMails_Should_sendHtmlMails_When_UsingSmtp()
-      throws SecurityException, SmtpMailServiceException, TemplateDescriptionServiceException, TemplateServiceException {
+      throws SecurityException, SmtpMailServiceException, TemplateDescriptionServiceException,
+          TemplateServiceException {
     ReflectionTestUtils.setField(mailService, FIELD_NAME_USE_SMTP, true);
     when(templateDescriptionService.getTemplateDescription(any()))
         .thenReturn(Optional.of(new TemplateDescription()));
-    when(templateService.render(any(), any(), any()))
-        .thenReturn(Optional.of("success"));
+    when(templateService.render(any(), any(), any())).thenReturn(Optional.of("success"));
 
     MailsDTO mailsDTO = new MailsDTO().mails(singletonList(createMailDTO()));
 
     mailService.sendHtmlMails(mailsDTO);
-    verify(smtpMailService, atLeastOnce()).prepareAndSendHtmlMail(eq(EMAIL),
-        any(), eq("success"), any());
+    verify(smtpMailService, atLeastOnce())
+        .prepareAndSendHtmlMail(eq(EMAIL), any(), eq("success"), any());
   }
 
   @Test
@@ -143,19 +138,19 @@ public class MailServiceTest {
 
   @Test
   public void sendHtmlMails_Should_sendSeveralHtmlMails_When_MoreThanOneMailIsInMailsDTO()
-      throws SecurityException, SmtpMailServiceException, TemplateDescriptionServiceException, TemplateServiceException {
+      throws SecurityException, SmtpMailServiceException, TemplateDescriptionServiceException,
+          TemplateServiceException {
     ReflectionTestUtils.setField(mailService, FIELD_NAME_USE_SMTP, true);
     when(templateDescriptionService.getTemplateDescription(any()))
         .thenReturn(Optional.of(new TemplateDescription()));
-    when(templateService.render(any(), any(), any()))
-        .thenReturn(Optional.of("success"));
+    when(templateService.render(any(), any(), any())).thenReturn(Optional.of("success"));
 
-    MailsDTO mailsDTO = new MailsDTO()
-        .mails(asList(createMailDTO(), createMailDTO(), createMailDTO()));
+    MailsDTO mailsDTO =
+        new MailsDTO().mails(asList(createMailDTO(), createMailDTO(), createMailDTO()));
 
     mailService.sendHtmlMails(mailsDTO);
-    verify(smtpMailService, times(3)).prepareAndSendHtmlMail(eq(EMAIL),
-        any(), eq("success"), any());
+    verify(smtpMailService, times(3))
+        .prepareAndSendHtmlMail(eq(EMAIL), any(), eq("success"), any());
   }
 
   @Test
@@ -168,21 +163,21 @@ public class MailServiceTest {
 
     MailsDTO mailsDTO = new MailsDTO().mails(singletonList(createMailDTO()));
     mailService.sendHtmlMails(mailsDTO);
-    verify(smtpMailService, atLeastOnce()).prepareAndSendTextMail(eq(ERROR_RECIPIENTS),
-        Mockito.anyString(), Mockito.anyString());
+    verify(smtpMailService, atLeastOnce())
+        .prepareAndSendTextMail(eq(ERROR_RECIPIENTS), Mockito.anyString(), Mockito.anyString());
   }
 
   @Test(expected = InternalServerErrorException.class)
-  public void sendHtmlMail_Should_ThrowInternalServerErrorExceptionAndLogExceptionStackTrace_When_AnErrorOccursDuringSendingMails()
-      throws ExchangeMailServiceException, TemplateDescriptionServiceException, TemplateServiceException {
+  public void
+      sendHtmlMail_Should_ThrowInternalServerErrorExceptionAndLogExceptionStackTrace_When_AnErrorOccursDuringSendingMails()
+          throws ExchangeMailServiceException, TemplateDescriptionServiceException,
+              TemplateServiceException {
     ReflectionTestUtils.setField(mailService, FIELD_NAME_USE_SMTP, false);
     when(templateDescriptionService.getTemplateDescription(any()))
         .thenReturn(Optional.of(new TemplateDescription()));
-    when(templateService.render(any(), any(), any()))
-        .thenReturn(Optional.of("success"));
+    when(templateService.render(any(), any(), any())).thenReturn(Optional.of("success"));
     ExchangeMailServiceException exception = mock(ExchangeMailServiceException.class);
-    doThrow(exception).when(exchangeMailService)
-        .prepareAndSendHtmlMail(any(), any(), any(), any());
+    doThrow(exception).when(exchangeMailService).prepareAndSendHtmlMail(any(), any(), any(), any());
 
     MailsDTO mailsDTO = new MailsDTO().mails(singletonList(createMailDTO()));
     mailService.sendHtmlMails(mailsDTO);
@@ -197,38 +192,34 @@ public class MailServiceTest {
     TemplateDescription templateDescription = new TemplateDescription();
     when(templateDescriptionService.getTemplateDescription(any()))
         .thenReturn(Optional.of(templateDescription));
-    when(templateService.render(any(), any(), any()))
-        .thenReturn(Optional.of("success"));
-    ErrorMailDTO errorMailDTO = new ErrorMailDTO()
-        .template("free-text")
-        .templateData(singletonList(
-            new TemplateDataDTO().key("text").value("<h2>test</h2>")
-        ));
+    when(templateService.render(any(), any(), any())).thenReturn(Optional.of("success"));
+    ErrorMailDTO errorMailDTO =
+        new ErrorMailDTO()
+            .template("free-text")
+            .templateData(singletonList(new TemplateDataDTO().key("text").value("<h2>test</h2>")));
 
     this.mailService.sendErrorMailDto(errorMailDTO);
 
     Map<String, Object> expectedData = new HashMap<>();
     expectedData.put("text", "<h2>test</h2>");
     verify(this.exchangeMailService, times(1)).prepareAndSendHtmlMail(any(), any(), any(), any());
-    verify(this.templateService, times(1)).getRenderedSubject(eq(templateDescription),
-        eq(expectedData), any(MailDTO.class));
+    verify(this.templateService, times(1))
+        .getRenderedSubject(eq(templateDescription), eq(expectedData), any(MailDTO.class));
   }
 
   @Test(expected = InternalServerErrorException.class)
-  public void sendErrotMailDto_Should_ThrowInternalServerErrorExceptionAndLogExceptionStackTrace_When_AnErrorOccursDuringSendingMails()
-      throws Exception {
+  public void
+      sendErrotMailDto_Should_ThrowInternalServerErrorExceptionAndLogExceptionStackTrace_When_AnErrorOccursDuringSendingMails()
+          throws Exception {
     ReflectionTestUtils.setField(mailService, FIELD_NAME_USE_SMTP, false);
     when(templateDescriptionService.getTemplateDescription(any()))
         .thenReturn(Optional.of(new TemplateDescription()));
-    when(templateService.render(any(), any(), any()))
-        .thenThrow(new TemplateServiceException(""));
-    ErrorMailDTO errorMailDTO = new ErrorMailDTO()
-        .template("free-text")
-        .templateData(singletonList(
-            new TemplateDataDTO().key("text").value("<h2>test</h2>")
-        ));
+    when(templateService.render(any(), any(), any())).thenThrow(new TemplateServiceException(""));
+    ErrorMailDTO errorMailDTO =
+        new ErrorMailDTO()
+            .template("free-text")
+            .templateData(singletonList(new TemplateDataDTO().key("text").value("<h2>test</h2>")));
 
     mailService.sendErrorMailDto(errorMailDTO);
   }
-
 }

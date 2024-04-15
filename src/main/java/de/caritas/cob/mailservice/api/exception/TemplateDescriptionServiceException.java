@@ -11,5 +11,4 @@ public class TemplateDescriptionServiceException extends Exception {
   public TemplateDescriptionServiceException(String message, Exception ex) {
     super(message, ex);
   }
-
 }

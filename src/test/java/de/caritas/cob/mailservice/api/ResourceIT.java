@@ -21,15 +21,13 @@ import org.springframework.test.context.ActiveProfiles;
 @ActiveProfiles("testing")
 class ResourceIT {
 
-  private static final String TEMPLATES_DIR = ResourcePatternResolver.CLASSPATH_URL_PREFIX
-      + "templates/";
+  private static final String TEMPLATES_DIR =
+      ResourcePatternResolver.CLASSPATH_URL_PREFIX + "templates/";
   private static final String DESC_FILE_PATTERN = "*.json";
 
-  @Autowired
-  private ObjectMapper objectMapper;
+  @Autowired private ObjectMapper objectMapper;
 
-  @Autowired
-  private ResourcePatternResolver resourceResolver;
+  @Autowired private ResourcePatternResolver resourceResolver;
 
   @Test
   void descriptionShouldDefineDefaultLanguageAndExistingTemplate() throws IOException {
@@ -61,11 +59,12 @@ class ResourceIT {
       var templates = desc.getHtmlTemplateFilename();
       assertTrue(templates.size() > 0);
 
-      templates.forEach((languageCode, templateFilename) -> {
-        var templatePath = TEMPLATES_DIR + templateFilename;
-        var templateResource = resourceResolver.getResource(templatePath);
-        assertTrue(templateResource.exists());
-      });
+      templates.forEach(
+          (languageCode, templateFilename) -> {
+            var templatePath = TEMPLATES_DIR + templateFilename;
+            var templateResource = resourceResolver.getResource(templatePath);
+            assertTrue(templateResource.exists());
+          });
     }
   }
 
@@ -110,9 +109,11 @@ class ResourceIT {
       var json = Files.readString(jsonFile.getFile().toPath());
       var desc = objectMapper.readValue(json, TemplateDescription.class);
       var subjectKey = desc.getSubject();
-      assertNotNull(subjectKey, String.format(
-          "Json file with resource description does not contain subject key: %s",
-          jsonFile.getFilename()));
+      assertNotNull(
+          subjectKey,
+          String.format(
+              "Json file with resource description does not contain subject key: %s",
+              jsonFile.getFilename()));
     }
   }
 }

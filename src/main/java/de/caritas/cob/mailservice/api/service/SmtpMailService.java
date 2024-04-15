@@ -20,9 +20,7 @@ import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-/**
- * Service for sending mails via smtp
- */
+/** Service for sending mails via smtp */
 @Service
 public class SmtpMailService {
 
@@ -43,9 +41,7 @@ public class SmtpMailService {
   @Value("${template.use.custom.resources.path}")
   private boolean useCustomResourcesPath;
 
-  /**
-   * Standard constructor for mail service
-   */
+  /** Standard constructor for mail service */
   @Autowired
   public SmtpMailService(JavaMailSender javaMailSender) {
     this.javaMailSender = javaMailSender;
@@ -54,31 +50,31 @@ public class SmtpMailService {
   /**
    * Preparing and sending an html mail via smtp.
    *
-   * @param recipient    The mail address of the recipient
-   * @param subject      The subject of the mail
+   * @param recipient The mail address of the recipient
+   * @param subject The subject of the mail
    * @param htmlTemplate The name of the html template
    */
-  public void prepareAndSendHtmlMail(String recipient, String subject, String htmlTemplate,
-      List<TemplateImage> templateImages) throws SmtpMailServiceException {
+  public void prepareAndSendHtmlMail(
+      String recipient, String subject, String htmlTemplate, List<TemplateImage> templateImages)
+      throws SmtpMailServiceException {
 
     if (isNull(mailSender)) {
       throw new SmtpMailServiceException("No sender mail address set");
     }
 
     try {
-      javaMailSender
-          .send(buildHtmlMessagePreparator(recipient, subject, htmlTemplate, templateImages));
+      javaMailSender.send(
+          buildHtmlMessagePreparator(recipient, subject, htmlTemplate, templateImages));
     } catch (MailException ex) {
       throw new SmtpMailServiceException("Mail could not be send", ex);
     }
-
   }
 
-  private MimeMessagePreparator buildHtmlMessagePreparator(String recipient, String subject,
-      String htmlTemplate, List<TemplateImage> templateImages) {
+  private MimeMessagePreparator buildHtmlMessagePreparator(
+      String recipient, String subject, String htmlTemplate, List<TemplateImage> templateImages) {
     return mimeMessage -> {
-      var messageHelper = new MimeMessageHelper(mimeMessage,
-          (!CollectionUtils.isEmpty(templateImages)), "UTF-8");
+      var messageHelper =
+          new MimeMessageHelper(mimeMessage, (!CollectionUtils.isEmpty(templateImages)), "UTF-8");
       messageHelper.setFrom(this.mailSender);
       messageHelper.setTo(getRecipients(recipient));
       messageHelper.setSubject(subject);
@@ -88,17 +84,19 @@ public class SmtpMailService {
         for (TemplateImage templateImage : templateImages) {
           InputStreamSource inputStreamSource;
           if (useCustomResourcesPath) {
-            inputStreamSource = new ByteArrayResource(
-                IOUtils.toByteArray(new FileInputStream(
-                    customResourcePath + CUSTOM_TEMPLATE_IMAGE_DIR + templateImage
-                        .getFilename())));
+            inputStreamSource =
+                new ByteArrayResource(
+                    IOUtils.toByteArray(
+                        new FileInputStream(
+                            customResourcePath
+                                + CUSTOM_TEMPLATE_IMAGE_DIR
+                                + templateImage.getFilename())));
           } else {
-            inputStreamSource = new ClassPathResource(
-                TEMPLATE_IMAGE_DIR + templateImage
-                    .getFilename());
+            inputStreamSource =
+                new ClassPathResource(TEMPLATE_IMAGE_DIR + templateImage.getFilename());
           }
-          messageHelper.addInline(templateImage.getFilename(), inputStreamSource,
-              templateImage.getFiletype());
+          messageHelper.addInline(
+              templateImage.getFilename(), inputStreamSource, templateImage.getFiletype());
         }
       }
     };
@@ -108,8 +106,8 @@ public class SmtpMailService {
    * Preparing and sending an simple text mail.
    *
    * @param recipient The mail address of the recipient
-   * @param subject   The subject of the mail
-   * @param body      The body of the mail
+   * @param subject The subject of the mail
+   * @param body The body of the mail
    */
   public void prepareAndSendTextMail(String recipient, String subject, String body)
       throws SmtpMailServiceException {
@@ -125,10 +123,9 @@ public class SmtpMailService {
     }
   }
 
-  private MimeMessagePreparator buildTextMessagePreparator(String recipient, String subject,
-      String body) {
+  private MimeMessagePreparator buildTextMessagePreparator(
+      String recipient, String subject, String body) {
     return mimeMessage -> {
-
       var messageHelper = new MimeMessageHelper(mimeMessage);
       messageHelper.setFrom(this.mailSender);
       messageHelper.setTo(getRecipients(recipient));
@@ -139,7 +136,7 @@ public class SmtpMailService {
 
   private String[] getRecipients(String recipient) {
     if (isNotBlank(fixMailRecipient)) {
-      return new String[] { fixMailRecipient };
+      return new String[] {fixMailRecipient};
     } else {
       return recipient.split(",");
     }

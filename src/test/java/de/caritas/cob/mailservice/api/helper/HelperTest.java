@@ -13,14 +13,14 @@ public class HelperTest {
 
   private Helper helper;
 
-  private final static String TEXT = "Lorem Ipsum";
-  private final static String TEXT_WITH_NEWLINE = "Lorem Ipsum\nLorem Ipsum";
-  private final static String TEXT_WITH_NEWLINE_AND_HTML_AND_JS =
+  private static final String TEXT = "Lorem Ipsum";
+  private static final String TEXT_WITH_NEWLINE = "Lorem Ipsum\nLorem Ipsum";
+  private static final String TEXT_WITH_NEWLINE_AND_HTML_AND_JS =
       "<b>Lorem Ipsum</b>\nLorem Ipsum<script>alert('1');</script>";
-  private final static String TEXT_WITH_HTML = "<strong>Lorem Ipsum</strong>";
-  private final static String TEXT_WITH_JS = "Lorem Ipsum<script>alert('1');</script>";
-  private final static String TEXT_WITH_HTML_ENTITY = "Hallo &amp;";
-  private final static String TEXT_WITH_UNESCAPED_HTML_ENTITY = "Hallo &";
+  private static final String TEXT_WITH_HTML = "<strong>Lorem Ipsum</strong>";
+  private static final String TEXT_WITH_JS = "Lorem Ipsum<script>alert('1');</script>";
+  private static final String TEXT_WITH_HTML_ENTITY = "Hallo &amp;";
+  private static final String TEXT_WITH_UNESCAPED_HTML_ENTITY = "Hallo &";
 
   @Before
   public void setup() {
@@ -43,7 +43,8 @@ public class HelperTest {
   }
 
   @Test
-  public void removeHTMLFromText_Should_RemoveHtmlAndJavascriptFromText_And_ShouldNot_RemoveNewlines() {
+  public void
+      removeHTMLFromText_Should_RemoveHtmlAndJavascriptFromText_And_ShouldNot_RemoveNewlines() {
     assertEquals(TEXT_WITH_NEWLINE, helper.removeHTMLFromText(TEXT_WITH_NEWLINE_AND_HTML_AND_JS));
   }
 
@@ -53,8 +54,8 @@ public class HelperTest {
   }
 
   @Test(expected = InternalServerErrorException.class)
-  public void removeHTMLFromText_Should_ThrowInternalServerErrorException_When_removeTextFromNull() {
+  public void
+      removeHTMLFromText_Should_ThrowInternalServerErrorException_When_removeTextFromNull() {
     helper.removeHTMLFromText(null);
   }
-
 }

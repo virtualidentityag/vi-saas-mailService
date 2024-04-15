@@ -15,9 +15,9 @@ import de.caritas.cob.mailservice.api.model.MailDTO;
 import de.caritas.cob.mailservice.api.model.MailsDTO;
 import de.caritas.cob.mailservice.api.model.TemplateDataDTO;
 import de.caritas.cob.mailservice.config.apiclient.TranslationManagementServiceApiClient;
+import jakarta.servlet.http.Cookie;
 import java.util.List;
 import java.util.Map;
-import javax.servlet.http.Cookie;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -46,43 +46,42 @@ class MailControllerE2EIT {
   private static final String CSRF_VALUE = "test";
   private static final Cookie CSRF_COOKIE = new Cookie("csrfCookie", CSRF_VALUE);
 
-  @Autowired
-  private MockMvc mockMvc;
+  @Autowired private MockMvc mockMvc;
 
-  @Autowired
-  private ObjectMapper objectMapper;
+  @Autowired private ObjectMapper objectMapper;
 
   @MockBean
   @Qualifier("emailsender")
   private JavaMailSender javaMailSender;
 
-  @MockBean
-  private TranslationManagementServiceApiClient translationManagementServiceApiClient;
+  @MockBean private TranslationManagementServiceApiClient translationManagementServiceApiClient;
 
-  @Captor
-  private ArgumentCaptor<MimeMessagePreparator> mimeMessagePrepCaptor;
+  @Captor private ArgumentCaptor<MimeMessagePreparator> mimeMessagePrepCaptor;
 
   private MailsDTO mailsDTO;
   private Map<String, List<Map<String, Object>>> mailsDTOMap;
 
   @BeforeEach
   void setUp() {
-    Mockito.doThrow(new HttpClientErrorException(HttpStatus.NOT_FOUND)).when(translationManagementServiceApiClient).tryFetchTranslationsFromTranslationManagementService(
-        anyString(), anyString(), anyString(), any(Dialect.class));
+    Mockito.doThrow(new HttpClientErrorException(HttpStatus.NOT_FOUND))
+        .when(translationManagementServiceApiClient)
+        .tryFetchTranslationsFromTranslationManagementService(
+            anyString(), anyString(), anyString(), any(Dialect.class));
   }
 
   @Test
   void sendMailsShouldRespondWithOkWhenEmailListIsEmpty() throws Exception {
     givenAnEmptyEmailList();
 
-    mockMvc.perform(
-        post("/mails/send")
-            .cookie(CSRF_COOKIE)
-            .header(CSRF_HEADER, CSRF_VALUE)
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(mailsDTO))
-            .accept(MediaType.APPLICATION_JSON)
-    ).andExpect(status().isOk());
+    mockMvc
+        .perform(
+            post("/mails/send")
+                .cookie(CSRF_COOKIE)
+                .header(CSRF_HEADER, CSRF_VALUE)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(mailsDTO))
+                .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk());
   }
 
   @Test
@@ -90,14 +89,15 @@ class MailControllerE2EIT {
       throws Exception {
     givenAnEmailListWithoutLanguage();
 
-    mockMvc.perform(
-        post("/mails/send")
-            .cookie(CSRF_COOKIE)
-            .header(CSRF_HEADER, CSRF_VALUE)
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(mailsDTOMap))
-            .accept(MediaType.APPLICATION_JSON)
-    ).andExpect(status().isOk());
+    mockMvc
+        .perform(
+            post("/mails/send")
+                .cookie(CSRF_COOKIE)
+                .header(CSRF_HEADER, CSRF_VALUE)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(mailsDTOMap))
+                .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk());
 
     verify(javaMailSender).send(mimeMessagePrepCaptor.capture());
 
@@ -119,14 +119,15 @@ class MailControllerE2EIT {
       throws Exception {
     givenAnEmailList(null);
 
-    mockMvc.perform(
-        post("/mails/send")
-            .cookie(CSRF_COOKIE)
-            .header(CSRF_HEADER, CSRF_VALUE)
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(mailsDTO))
-            .accept(MediaType.APPLICATION_JSON)
-    ).andExpect(status().isOk());
+    mockMvc
+        .perform(
+            post("/mails/send")
+                .cookie(CSRF_COOKIE)
+                .header(CSRF_HEADER, CSRF_VALUE)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(mailsDTO))
+                .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk());
 
     verify(javaMailSender).send(mimeMessagePrepCaptor.capture());
 
@@ -148,14 +149,15 @@ class MailControllerE2EIT {
       throws Exception {
     givenAnEmailList(LanguageCode.IO);
 
-    mockMvc.perform(
-        post("/mails/send")
-            .cookie(CSRF_COOKIE)
-            .header(CSRF_HEADER, CSRF_VALUE)
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(mailsDTO))
-            .accept(MediaType.APPLICATION_JSON)
-    ).andExpect(status().isOk());
+    mockMvc
+        .perform(
+            post("/mails/send")
+                .cookie(CSRF_COOKIE)
+                .header(CSRF_HEADER, CSRF_VALUE)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(mailsDTO))
+                .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk());
 
     verify(javaMailSender).send(mimeMessagePrepCaptor.capture());
 
@@ -176,14 +178,15 @@ class MailControllerE2EIT {
   void sendMailsShouldSendEmailAndRenderDataWhenLanguageIsDefaultLanguage() throws Exception {
     givenAnEmailList(LanguageCode.DE);
 
-    mockMvc.perform(
-        post("/mails/send")
-            .cookie(CSRF_COOKIE)
-            .header(CSRF_HEADER, CSRF_VALUE)
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(mailsDTO))
-            .accept(MediaType.APPLICATION_JSON)
-    ).andExpect(status().isOk());
+    mockMvc
+        .perform(
+            post("/mails/send")
+                .cookie(CSRF_COOKIE)
+                .header(CSRF_HEADER, CSRF_VALUE)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(mailsDTO))
+                .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk());
 
     verify(javaMailSender).send(mimeMessagePrepCaptor.capture());
 
@@ -204,14 +207,15 @@ class MailControllerE2EIT {
   void sendMailsShouldSendEmailAndRenderDataWithSetLanguage() throws Exception {
     givenAnEmailList(LanguageCode.EN);
 
-    mockMvc.perform(
-        post("/mails/send")
-            .cookie(CSRF_COOKIE)
-            .header(CSRF_HEADER, CSRF_VALUE)
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(mailsDTO))
-            .accept(MediaType.APPLICATION_JSON)
-    ).andExpect(status().isOk());
+    mockMvc
+        .perform(
+            post("/mails/send")
+                .cookie(CSRF_COOKIE)
+                .header(CSRF_HEADER, CSRF_VALUE)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(mailsDTO))
+                .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk());
 
     verify(javaMailSender).send(mimeMessagePrepCaptor.capture());
 
@@ -238,15 +242,13 @@ class MailControllerE2EIT {
     email.setTemplate("reassign-confirmation-notification");
     email.setDialect(Dialect.FORMAL);
 
-    var nameRecipient = new TemplateDataDTO()
-        .key("name_recipient")
-        .value(RandomStringUtils.randomAlphanumeric(16));
-    var nameFromConsultant = new TemplateDataDTO()
-        .key("name_from_consultant")
-        .value(RandomStringUtils.randomAlphanumeric(16));
-    var url = new TemplateDataDTO()
-        .key("url")
-        .value(RandomStringUtils.randomAlphanumeric(16));
+    var nameRecipient =
+        new TemplateDataDTO().key("name_recipient").value(RandomStringUtils.randomAlphanumeric(16));
+    var nameFromConsultant =
+        new TemplateDataDTO()
+            .key("name_from_consultant")
+            .value(RandomStringUtils.randomAlphanumeric(16));
+    var url = new TemplateDataDTO().key("url").value(RandomStringUtils.randomAlphanumeric(16));
     email.setTemplateData(List.of(nameRecipient, nameFromConsultant, url));
     email.setLanguage(languageCode);
 
@@ -287,12 +289,14 @@ class MailControllerE2EIT {
       throws NoSuchFieldException, IllegalAccessException {
     var text = getArg(prep, 5);
     var data = mailDTO.getTemplateData();
-    var salutation = "<b><span>Liebe(r)</span> <span>" + valueOf("name_recipient", data) + "</span>,</b>";
+    var salutation =
+        "<b><span>Liebe(r)</span> <span>" + valueOf("name_recipient", data) + "</span>,</b>";
     assertTrue(text.contains(salutation));
 
-    var message = "<span>"
-        + valueOf("name_from_consultant", data)
-        + "</span> <span>hat Ihnen eine(n) Ratsuchende(n) übergeben.</span>";
+    var message =
+        "<span>"
+            + valueOf("name_from_consultant", data)
+            + "</span> <span>hat Ihnen eine(n) Ratsuchende(n) übergeben.</span>";
     assertTrue(text.contains(message));
 
     var anchorStart = "<a href=\"" + valueOf("url", data) + "\">";

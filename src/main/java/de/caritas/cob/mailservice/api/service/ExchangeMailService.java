@@ -20,15 +20,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-/**
- * Service for sending mails via exchange
- */
+/** Service for sending mails via exchange */
 @Service
 public class ExchangeMailService {
 
   private static final String TEMPLATE_IMAGE_DIR = "/templates/images/";
   private static final String CUSTOM_TEMPLATE_IMAGE_DIR = "images/";
-
 
   @Value("${mail.sender}")
   private String mailSender;
@@ -57,12 +54,13 @@ public class ExchangeMailService {
   /**
    * Preparing and sending an html mail via Exchange.
    *
-   * @param recipient    The mail address of the recipient
-   * @param subject      The subject of the mail
+   * @param recipient The mail address of the recipient
+   * @param subject The subject of the mail
    * @param htmlTemplate The name of the html template
    */
-  public void prepareAndSendHtmlMail(String recipient, String subject, String htmlTemplate,
-      List<TemplateImage> templateImages) throws ExchangeMailServiceException {
+  public void prepareAndSendHtmlMail(
+      String recipient, String subject, String htmlTemplate, List<TemplateImage> templateImages)
+      throws ExchangeMailServiceException {
     this.prepareAndSendMail(recipient, subject, htmlTemplate, templateImages, BodyType.HTML);
   }
 
@@ -70,16 +68,21 @@ public class ExchangeMailService {
    * Preparing and sending an text mail via Exchange.
    *
    * @param recipients The mail address of the recipients
-   * @param subject    The subject of the mail
-   * @param body       The text to send
+   * @param subject The subject of the mail
+   * @param body The text to send
    */
   public void prepareAndSendTextMail(String recipients, String subject, String body)
       throws ExchangeMailServiceException {
     this.prepareAndSendMail(recipients, subject, body, null, BodyType.Text);
   }
 
-  private void prepareAndSendMail(String recipients, String subject, String bodyText,
-      List<TemplateImage> templateImages, BodyType bodyType) throws ExchangeMailServiceException {
+  private void prepareAndSendMail(
+      String recipients,
+      String subject,
+      String bodyText,
+      List<TemplateImage> templateImages,
+      BodyType bodyType)
+      throws ExchangeMailServiceException {
 
     if (isNull(mailSender)) {
       throw new ExchangeMailServiceException("No sender mail address set");
@@ -116,8 +119,9 @@ public class ExchangeMailService {
     }
   }
 
-  private EmailMessage buildEmailMessage(String subject, String bodyText, BodyType bodyType,
-      ExchangeService exchangeService) throws ExchangeMailServiceException {
+  private EmailMessage buildEmailMessage(
+      String subject, String bodyText, BodyType bodyType, ExchangeService exchangeService)
+      throws ExchangeMailServiceException {
     try {
       var msg = new EmailMessage(exchangeService);
       msg.setSubject(subject);
@@ -140,16 +144,20 @@ public class ExchangeMailService {
       for (TemplateImage templateImage : templateImages) {
         try {
           var inputStream =
-              useCustomResourcesPath ? buildStreamForExternalPath(templateImage.getFilename())
+              useCustomResourcesPath
+                  ? buildStreamForExternalPath(templateImage.getFilename())
                   : getClass()
                       .getResourceAsStream(TEMPLATE_IMAGE_DIR + templateImage.getFilename());
           msg.getAttachments().addFileAttachment(templateImage.getFilename(), inputStream);
           msg.getAttachments().getItems().get(attachmentIndex).setIsInline(true);
-          msg.getAttachments().getItems().get(attachmentIndex)
+          msg.getAttachments()
+              .getItems()
+              .get(attachmentIndex)
               .setContentId(templateImage.getFilename());
-          msg.getAttachments().getItems().get(attachmentIndex)
-              .setName(templateImage.getFilename());
-          msg.getAttachments().getItems().get(attachmentIndex)
+          msg.getAttachments().getItems().get(attachmentIndex).setName(templateImage.getFilename());
+          msg.getAttachments()
+              .getItems()
+              .get(attachmentIndex)
               .setContentType(templateImage.getFiletype());
           attachmentIndex++;
         } catch (Exception e) {
@@ -180,5 +188,4 @@ public class ExchangeMailService {
       throw new ExchangeMailServiceException("Could not set recipient", e);
     }
   }
-
 }

@@ -9,9 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.client.RestTemplate;
 
-/**
- * Contains some general spring boot application configurations
- */
+/** Contains some general spring boot application configurations */
 @Configuration
 @ComponentScan(basePackages = {"de.caritas.cob.mailservice"})
 @EnableCaching
@@ -34,5 +32,4 @@ public class AppConfig {
   public RestTemplate restTemplate(RestTemplateBuilder builder) {
     return builder.build();
   }
-
 }

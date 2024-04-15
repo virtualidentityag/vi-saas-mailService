@@ -1,19 +1,17 @@
 package de.caritas.cob.mailservice.api.service;
 
+import de.caritas.cob.mailservice.api.model.Dialect;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
-import de.caritas.cob.mailservice.api.model.Dialect;
-import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
@@ -25,50 +23,69 @@ public class DefaultTranslationsService {
   @Value("${template.use.custom.resources.path}")
   private boolean useCustomResourcesPath;
 
-  public String fetchDefaultTranslations(String translationComponentName, String languageCode,
-      Dialect dialect) {
-    InputStream inputStream = useCustomResourcesPath ? tryFetchExternalTranslationWithFallbackToEmptyDialect(translationComponentName, languageCode, dialect) :
-            tryFetchDefaultTranslationWithFallbackToEmptyDialect(translationComponentName, languageCode, dialect);
+  public String fetchDefaultTranslations(
+      String translationComponentName, String languageCode, Dialect dialect) {
+    InputStream inputStream =
+        useCustomResourcesPath
+            ? tryFetchExternalTranslationWithFallbackToEmptyDialect(
+                translationComponentName, languageCode, dialect)
+            : tryFetchDefaultTranslationWithFallbackToEmptyDialect(
+                translationComponentName, languageCode, dialect);
     if (inputStream == null) {
       return "{}";
     }
     try {
-      final List<String> fileLines = IOUtils
-          .readLines(inputStream, StandardCharsets.UTF_8.displayName());
+      final List<String> fileLines =
+          IOUtils.readLines(inputStream, StandardCharsets.UTF_8.displayName());
       return String.join("", fileLines);
     } catch (IOException ex) {
-      throw new IllegalStateException(String.format(
-          "Json file with translations could not be loaded, translation component name: %s",
-          translationComponentName), ex);
+      throw new IllegalStateException(
+          String.format(
+              "Json file with translations could not be loaded, translation component name: %s",
+              translationComponentName),
+          ex);
     }
   }
 
-  private InputStream tryFetchExternalTranslationWithFallbackToEmptyDialect(String translationComponentName, String languageCode,
-          Dialect dialect) {
-    InputStream inputStream = buildStreamForExternalPath(translationComponentName, languageCode, dialect);
-    return inputStream != null ? inputStream : buildStreamForExternalPath(translationComponentName, languageCode, null);
+  private InputStream tryFetchExternalTranslationWithFallbackToEmptyDialect(
+      String translationComponentName, String languageCode, Dialect dialect) {
+    InputStream inputStream =
+        buildStreamForExternalPath(translationComponentName, languageCode, dialect);
+    return inputStream != null
+        ? inputStream
+        : buildStreamForExternalPath(translationComponentName, languageCode, null);
   }
 
-  private FileInputStream buildStreamForExternalPath(String translationComponentName, String languageCode, Dialect dialect) {
+  private FileInputStream buildStreamForExternalPath(
+      String translationComponentName, String languageCode, Dialect dialect) {
     try {
-      String filename = String.format("%s/%s.%s%s.json", customTranslationsPath, translationComponentName.toLowerCase(), languageCode, getDialectSuffix(dialect));
+      String filename =
+          String.format(
+              "%s/%s.%s%s.json",
+              customTranslationsPath,
+              translationComponentName.toLowerCase(),
+              languageCode,
+              getDialectSuffix(dialect));
       return new FileInputStream(filename);
     } catch (FileNotFoundException e) {
-      log.warn("Default translations for component {}, language {} not found in external path {}", translationComponentName,
-              languageCode, customTranslationsPath);
+      log.warn(
+          "Default translations for component {}, language {} not found in external path {}",
+          translationComponentName,
+          languageCode,
+          customTranslationsPath);
       return null;
     }
   }
 
-  private InputStream tryFetchDefaultTranslationWithFallbackToEmptyDialect(String translationComponentName, String languageCode,
-      Dialect dialect) {
-    InputStream inputStream = getInputStream(translationComponentName, languageCode,
-        dialect);
+  private InputStream tryFetchDefaultTranslationWithFallbackToEmptyDialect(
+      String translationComponentName, String languageCode, Dialect dialect) {
+    InputStream inputStream = getInputStream(translationComponentName, languageCode, dialect);
     if (inputStream == null) {
       log.warn(
           "Default translations for component {}, language {}, dialect {} not found in resources. Will try to fallback to default translations for empty dialect.",
           translationComponentName,
-          languageCode, dialect);
+          languageCode,
+          dialect);
 
       inputStream = getInputStream(translationComponentName, languageCode, null);
       if (inputStream == null) {
@@ -82,11 +99,11 @@ public class DefaultTranslationsService {
     return inputStream;
   }
 
-  private InputStream getInputStream(String translationComponentName, String languageCode,
-      Dialect dialect) {
-    String translationFilename = getTranslationFilename(
-        translationComponentName + "." + languageCode
-            + getDialectSuffix(dialect));
+  private InputStream getInputStream(
+      String translationComponentName, String languageCode, Dialect dialect) {
+    String translationFilename =
+        getTranslationFilename(
+            translationComponentName + "." + languageCode + getDialectSuffix(dialect));
     return TranslationService.class.getResourceAsStream(translationFilename);
   }
 
