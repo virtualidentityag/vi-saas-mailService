@@ -85,6 +85,20 @@ class MailControllerE2EIT {
   }
 
   @Test
+  void sendMailsShouldRespondWithAccessDeniedWhenCrsfTokenIsNotGiven() throws Exception {
+    givenAnEmptyEmailList();
+
+    mockMvc
+        .perform(
+            post("/mails/send")
+                .cookie(CSRF_COOKIE)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(mailsDTO))
+                .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isForbidden());
+  }
+
+  @Test
   void sendMailsShouldSendEmailAndRenderDataWithDefaultLanguageWhenLanguageNotGiven()
       throws Exception {
     givenAnEmailListWithoutLanguage();
