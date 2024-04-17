@@ -42,7 +42,8 @@ public class SecurityConfig {
   public SecurityFilterChain configure(HttpSecurity http) throws Exception {
 
     var httpSecurity =
-        http
+        http.csrf()
+            .disable()
             .addFilterBefore(
                 new StatelessCsrfFilter(csrfCookieProperty, csrfHeaderProperty), CsrfFilter.class);
 
