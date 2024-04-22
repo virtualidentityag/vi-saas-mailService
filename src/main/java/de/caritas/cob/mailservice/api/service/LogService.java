@@ -4,15 +4,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 
-/**
- * Service for logging.
- */
+/** Service for logging. */
 public class LogService {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(LogService.class);
 
-  private LogService() {
-  }
+  private LogService() {}
 
   /**
    * Logs a an error with exception.
@@ -69,7 +66,9 @@ public class LogService {
    * @param exception the exception to be logged
    */
   public static void logWarn(HttpStatus status, Exception exception) {
-    LOGGER.warn("MailService API: {}: {}", status.getReasonPhrase(),
+    LOGGER.warn(
+        "MailService API: {}: {}",
+        status.getReasonPhrase(),
         org.apache.commons.lang3.exception.ExceptionUtils.getStackTrace(exception));
   }
 
@@ -79,8 +78,8 @@ public class LogService {
    * @param exception the exception
    */
   public static void logWarn(Exception exception) {
-    LOGGER.warn("MailService API: {}: ",
+    LOGGER.warn(
+        "MailService API: {}: ",
         org.apache.commons.lang3.exception.ExceptionUtils.getStackTrace(exception));
   }
-
 }

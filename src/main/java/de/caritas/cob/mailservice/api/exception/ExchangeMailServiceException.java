@@ -29,5 +29,4 @@ public class ExchangeMailServiceException extends Exception {
   public ExchangeMailServiceException(String message) {
     super(message);
   }
-
 }

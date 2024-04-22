@@ -1,22 +1,36 @@
 package de.caritas.cob.mailservice.config;
 
+import de.caritas.cob.mailservice.filter.StatelessCsrfFilter;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.session.NullAuthenticatedSessionStrategy;
 import org.springframework.security.web.csrf.CsrfFilter;
-import de.caritas.cob.mailservice.filter.StatelessCsrfFilter;
 
-/**
- * Provides the Security configuration.
- *
- */
+/** Provides the Security configuration. */
 @Configuration
 @EnableWebSecurity
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+public class SecurityConfig {
+
+  public static final List<String> WHITE_LIST =
+      List.of(
+          "/mails/docs",
+          "/mails/docs/**",
+          "/v2/api-docs",
+          "/configuration/ui",
+          "/swagger-resources/**",
+          "/configuration/security",
+          "/swagger-ui.html",
+          "/webjars/**",
+          "/actuator/health",
+          "/actuator/health/**",
+          "/translations",
+          "/translations/**");
 
   @Value("${csrf.cookie.property}")
   private String csrfCookieProperty;
@@ -24,19 +38,24 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   @Value("${csrf.header.property}")
   private String csrfHeaderProperty;
 
-  /**
-   * Configure spring security filter chain
-   * 
-   */
-  @Override
-  protected void configure(HttpSecurity http) throws Exception {
-    http.csrf().disable()
-        .addFilterBefore(new StatelessCsrfFilter(csrfCookieProperty, csrfHeaderProperty),
-            CsrfFilter.class)
-        .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-        .sessionAuthenticationStrategy(new NullAuthenticatedSessionStrategy()).and()
-        .authorizeRequests()
-        .anyRequest().permitAll();
-  }
+  @Bean
+  public SecurityFilterChain configure(HttpSecurity http) throws Exception {
 
+    var httpSecurity =
+        http.csrf()
+            .disable()
+            .addFilterBefore(
+                new StatelessCsrfFilter(csrfCookieProperty, csrfHeaderProperty), CsrfFilter.class);
+
+    httpSecurity
+        .sessionManagement()
+        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+        .sessionAuthenticationStrategy(new NullAuthenticatedSessionStrategy())
+        .and()
+        .authorizeRequests()
+        .anyRequest()
+        .permitAll();
+
+    return httpSecurity.build();
+  }
 }

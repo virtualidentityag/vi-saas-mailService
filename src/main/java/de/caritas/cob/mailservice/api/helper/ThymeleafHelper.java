@@ -16,8 +16,7 @@ public class ThymeleafHelper {
 
   private static final String INFORMAL_GERMAN_LANGUAGE_TAG = "de-DE-u-va-posix";
 
-  @Autowired
-  private TemplateEngine tempTemplateEngine;
+  @Autowired private TemplateEngine tempTemplateEngine;
 
   private static TemplateEngine templateEngine;
 
@@ -26,7 +25,8 @@ public class ThymeleafHelper {
     templateEngine = tempTemplateEngine;
   }
 
-  public static Optional<String> getProcessedHtml(Map<String, Object> data, LanguageCode languageCode, String templateName, Dialect dialect) {
+  public static Optional<String> getProcessedHtml(
+      Map<String, Object> data, LanguageCode languageCode, String templateName, Dialect dialect) {
 
     Context context = new Context();
     Locale locale = Locale.forLanguageTag(getLanguageTag(languageCode, dialect));
@@ -36,7 +36,6 @@ public class ThymeleafHelper {
       return Optional.of(templateEngine.process(templateName, context));
     }
     return Optional.empty();
-
   }
 
   private static String getLanguageTag(LanguageCode languageCode, Dialect dialect) {

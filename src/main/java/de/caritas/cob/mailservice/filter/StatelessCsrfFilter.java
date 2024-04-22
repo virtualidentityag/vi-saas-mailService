@@ -1,24 +1,20 @@
 package de.caritas.cob.mailservice.filter;
 
+import de.caritas.cob.mailservice.config.SecurityConfig;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.regex.Pattern;
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.access.AccessDeniedHandlerImpl;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
-import de.caritas.cob.mailservice.config.SpringFoxConfig;
 
-/**
- * This custom filter checks CSRF cookie and header token for equality
- *
- */
+/** This custom filter checks CSRF cookie and header token for equality */
 public class StatelessCsrfFilter extends OncePerRequestFilter {
 
   private final RequestMatcher requireCsrfProtectionMatcher = new DefaultRequiresCsrfMatcher();
@@ -32,8 +28,9 @@ public class StatelessCsrfFilter extends OncePerRequestFilter {
   }
 
   @Override
-  protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
-      FilterChain filterChain) throws ServletException, IOException {
+  protected void doFilterInternal(
+      HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+      throws ServletException, IOException {
 
     if (requireCsrfProtectionMatcher.matches(request)) {
       final String csrfTokenValue = request.getHeader(csrfHeaderProperty);
@@ -49,8 +46,8 @@ public class StatelessCsrfFilter extends OncePerRequestFilter {
       }
 
       if (csrfTokenValue == null || !csrfTokenValue.equals(csrfCookieValue)) {
-        accessDeniedHandler.handle(request, response,
-            new AccessDeniedException("Missing or non-matching CSRF-token"));
+        accessDeniedHandler.handle(
+            request, response, new AccessDeniedException("Missing or non-matching CSRF-token"));
         return;
       }
     }
@@ -64,7 +61,8 @@ public class StatelessCsrfFilter extends OncePerRequestFilter {
     public boolean matches(HttpServletRequest request) {
 
       // Allow specific whitelist items to disable CSRF protection for Swagger UI documentation
-      if (Arrays.stream(SpringFoxConfig.WHITE_LIST).parallel()
+      if (SecurityConfig.WHITE_LIST.stream()
+          .parallel()
           .anyMatch(request.getRequestURI().toLowerCase()::contains)) {
         return false;
       }

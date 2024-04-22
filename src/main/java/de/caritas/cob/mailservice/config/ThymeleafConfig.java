@@ -21,12 +21,12 @@ public class ThymeleafConfig {
   @Value("${template.use.custom.resources.path}")
   private boolean useCustomResourcesPath;
 
-
   /**
-   * Based on the {@link ThymeleafConfig#useCustomResourcesPath} value this method creates the right template resolver.
-   * useCustomResourcesPath == true -> {@link ThymeleafConfig#htmlFileTemplateResolver()}
-   * useCustomResourcesPath == true -> {@link ThymeleafConfig#htmlClassLoaderTemplateResolver()}
-   * 
+   * Based on the {@link ThymeleafConfig#useCustomResourcesPath} value this method creates the right
+   * template resolver. useCustomResourcesPath == true -> {@link
+   * ThymeleafConfig#htmlFileTemplateResolver()} useCustomResourcesPath == true -> {@link
+   * ThymeleafConfig#htmlClassLoaderTemplateResolver()}
+   *
    * @return ClassLoaderTemplateResolver.
    */
   @Bean
@@ -45,7 +45,8 @@ public class ThymeleafConfig {
   }
 
   private ITemplateResolver htmlClassLoaderTemplateResolver() {
-    ClassLoaderTemplateResolver emailClassLoaderTemplateResolver = new ClassLoaderTemplateResolver();
+    ClassLoaderTemplateResolver emailClassLoaderTemplateResolver =
+        new ClassLoaderTemplateResolver();
     emailClassLoaderTemplateResolver.setOrder(2);
     emailClassLoaderTemplateResolver.setPrefix("/templates/");
     emailClassLoaderTemplateResolver.setSuffix(".html");
@@ -58,5 +59,4 @@ public class ThymeleafConfig {
   public MessageSource messageSource(TranslationService translationService) {
     return new TranslationMessageSource(translationService);
   }
-
 }

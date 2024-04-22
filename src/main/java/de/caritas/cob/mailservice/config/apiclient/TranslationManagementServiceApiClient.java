@@ -24,18 +24,26 @@ public class TranslationManagementServiceApiClient {
   @Value("${weblate.api.key}")
   private String apiKey;
 
-  private final  @NonNull RestTemplate restTemplate;
+  private final @NonNull RestTemplate restTemplate;
 
-  public String tryFetchTranslationsFromTranslationManagementService(String project,
-      String component, String languageCode, Dialect dialect) {
+  public String tryFetchTranslationsFromTranslationManagementService(
+      String project, String component, String languageCode, Dialect dialect) {
     HttpHeaders headers = new HttpHeaders();
     headers.set("Authorization", "Token " + apiKey);
-    String url = apiUrl + "translations/" + project + "/" + component + "/" + languageCode + getTranslationManagementServiceDialectSuffix(dialect)
-        + "/file.json";
+    String url =
+        apiUrl
+            + "translations/"
+            + project
+            + "/"
+            + component
+            + "/"
+            + languageCode
+            + getTranslationManagementServiceDialectSuffix(dialect)
+            + "/file.json";
 
     log.info("Calling url to fetch translations: {}", url);
-    ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET,
-        new HttpEntity<>(headers), String.class);
+    ResponseEntity<String> response =
+        restTemplate.exchange(url, HttpMethod.GET, new HttpEntity<>(headers), String.class);
     return response.getBody();
   }
 

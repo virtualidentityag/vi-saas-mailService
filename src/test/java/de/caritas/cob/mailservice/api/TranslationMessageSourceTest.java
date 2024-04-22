@@ -17,11 +17,9 @@ class TranslationMessageSourceTest {
 
   private static final String INFORMAL_GERMAL_LANGUAGE_TAG = "de-DE-u-va-posix";
 
-  @InjectMocks
-  private TranslationMessageSource translationMessageSource;
+  @InjectMocks private TranslationMessageSource translationMessageSource;
 
-  @Mock
-  private TranslationService translationService;
+  @Mock private TranslationService translationService;
 
   @Test
   void getMessage_Should_CallFetchTranslations_With_FormalDialect_For_DefaultLocale() {
@@ -29,22 +27,24 @@ class TranslationMessageSourceTest {
     Locale locale = Locale.getDefault();
 
     // when
-    translationMessageSource.getMessage("translation_key", new Object[]{}, "Message", locale);
+    translationMessageSource.getMessage("translation_key", new Object[] {}, "Message", locale);
 
     // then
-    verify(translationService, Mockito.times(1)).fetchTranslations(locale.getLanguage(), Dialect.FORMAL);
+    verify(translationService, Mockito.times(1))
+        .fetchTranslations(locale.getLanguage(), Dialect.FORMAL);
   }
 
   @Test
-  void getMessage_Should_CallFetchTranslations_With_InformalDialect_For_ForLocaleForInformalGerman() {
+  void
+      getMessage_Should_CallFetchTranslations_With_InformalDialect_For_ForLocaleForInformalGerman() {
     // given
     Locale locale = Locale.forLanguageTag(INFORMAL_GERMAL_LANGUAGE_TAG);
 
     // when
-    translationMessageSource.getMessage("translation_key", new Object[]{}, "Message", locale);
+    translationMessageSource.getMessage("translation_key", new Object[] {}, "Message", locale);
 
     // then
-    verify(translationService, Mockito.times(1)).fetchTranslations(locale.getLanguage(), Dialect.INFORMAL);
+    verify(translationService, Mockito.times(1))
+        .fetchTranslations(locale.getLanguage(), Dialect.INFORMAL);
   }
-
 }

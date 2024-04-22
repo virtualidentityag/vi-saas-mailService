@@ -10,5 +10,4 @@ public class TemplateServiceException extends Exception {
   public TemplateServiceException(String message) {
     super(message);
   }
-
 }
