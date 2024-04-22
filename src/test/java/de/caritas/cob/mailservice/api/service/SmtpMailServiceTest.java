@@ -26,8 +26,7 @@ public class SmtpMailServiceTest {
   public final String TEMPLATE = "test";
   public final String BODY = "test";
 
-  @Mock
-  private JavaMailSender javaMailSender;
+  @Mock private JavaMailSender javaMailSender;
 
   private SmtpMailService mailService;
 
@@ -45,7 +44,6 @@ public class SmtpMailServiceTest {
     } catch (SmtpMailServiceException serviceException) {
       assertTrue("Excepted ServiceException thrown", true);
     }
-
   }
 
   @Test
@@ -64,7 +62,6 @@ public class SmtpMailServiceTest {
     } catch (SmtpMailServiceException serviceException) {
       assertTrue("Excepted ServiceException thrown", true);
     }
-
   }
 
   @Test
@@ -76,7 +73,6 @@ public class SmtpMailServiceTest {
     } catch (SmtpMailServiceException serviceException) {
       assertTrue("Excepted ServiceException thrown", true);
     }
-
   }
 
   @Test
@@ -95,7 +91,5 @@ public class SmtpMailServiceTest {
     } catch (SmtpMailServiceException serviceException) {
       assertTrue("Excepted ServiceException thrown", true);
     }
-
   }
-
 }

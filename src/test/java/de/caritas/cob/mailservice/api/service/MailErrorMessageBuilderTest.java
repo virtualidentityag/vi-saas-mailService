@@ -13,7 +13,8 @@ public class MailErrorMessageBuilderTest {
   private final MailDTO mailDTO = new MailDTO().template("template");
 
   @Test
-  public void buildEmailErrorMessage_Should_returnErrorMessageWithoutEmail_When_emailIsContainedInStacktrace() {
+  public void
+      buildEmailErrorMessage_Should_returnErrorMessageWithoutEmail_When_emailIsContainedInStacktrace() {
     Exception exception = new RuntimeException("test@test.de");
 
     String errorMessage = this.mailErrorMessageBuilder.buildEmailErrorMessage(mailDTO, exception);
@@ -22,7 +23,8 @@ public class MailErrorMessageBuilderTest {
   }
 
   @Test
-  public void buildEmailErrorMessage_Should_returnErrorMessageWithoutOnlyEmail_When_emailIsContainedInStacktrace() {
+  public void
+      buildEmailErrorMessage_Should_returnErrorMessageWithoutOnlyEmail_When_emailIsContainedInStacktrace() {
     Exception exception = new RuntimeException("address is test@test.de for given user");
 
     String errorMessage = this.mailErrorMessageBuilder.buildEmailErrorMessage(mailDTO, exception);
@@ -32,12 +34,12 @@ public class MailErrorMessageBuilderTest {
   }
 
   @Test
-  public void buildEmailErrorMessage_Should_returnErrorMessageWithCustomReason_When_noEmailIsContainedInReason() {
+  public void
+      buildEmailErrorMessage_Should_returnErrorMessageWithCustomReason_When_noEmailIsContainedInReason() {
     Exception exception = new RuntimeException("My custom reason");
 
     String errorMessage = this.mailErrorMessageBuilder.buildEmailErrorMessage(mailDTO, exception);
 
     assertThat(errorMessage, containsString("My custom reason"));
   }
-
 }

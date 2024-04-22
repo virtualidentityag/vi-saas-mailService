@@ -28,62 +28,77 @@ public class MailControllerTestExchangeIT {
   private final String PATH_SEND_ERROR_MAIL = "/mails/error/send";
   private final String TEMPLATE = "test";
   private final String VALID_REQUEST_BODY =
-      "{\"mails\":[{" + "\"template\":\"" + TEMPLATE + "\",\"email\":\"dah@o4b.de\","
-          + "\"templateData\":[" + "{\"key\":\"name\"," + "\"value\":\"Max Mustermann\"},"
-          + "{\"key\":\"text\"," + "\"value\":\"hello, world!\"}" + "]}]}";
+      "{\"mails\":[{"
+          + "\"template\":\""
+          + TEMPLATE
+          + "\",\"email\":\"dah@o4b.de\","
+          + "\"templateData\":["
+          + "{\"key\":\"name\","
+          + "\"value\":\"Max Mustermann\"},"
+          + "{\"key\":\"text\","
+          + "\"value\":\"hello, world!\"}"
+          + "]}]}";
   private final String VALID_ERROR_REQUEST_BODY =
-      "{" + "\"template\":\"" + TEMPLATE + "\",\"email\":\"dah@o4b.de\","
-          + "\"templateData\":[" + "{\"key\":\"name\"," + "\"value\":\"Max Mustermann\"},"
-          + "{\"key\":\"text\"," + "\"value\":\"hello, world!\"}" + "]}";
+      "{"
+          + "\"template\":\""
+          + TEMPLATE
+          + "\",\"email\":\"dah@o4b.de\","
+          + "\"templateData\":["
+          + "{\"key\":\"name\","
+          + "\"value\":\"Max Mustermann\"},"
+          + "{\"key\":\"text\","
+          + "\"value\":\"hello, world!\"}"
+          + "]}";
 
-  @Autowired
-  private MockMvc mvc;
+  @Autowired private MockMvc mvc;
 
-  @MockBean
-  MailService mailService;
+  @MockBean MailService mailService;
 
   @Test
   public void sendMail_Should_ReturnOk_WhenTemplateDescriptionIsNotFound() throws Exception {
 
-    mvc.perform(post(PATH_SEND_MAIL).content(VALID_REQUEST_BODY)
-        .contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+    mvc.perform(
+            post(PATH_SEND_MAIL)
+                .content(VALID_REQUEST_BODY)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk());
-
   }
 
   @Test
   public void sendMail_Should_SendHtmlMail_And_ReturnOk_WhenExchange() throws Exception {
 
-    mvc.perform(post(PATH_SEND_MAIL).content(VALID_REQUEST_BODY)
-        .contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+    mvc.perform(
+            post(PATH_SEND_MAIL)
+                .content(VALID_REQUEST_BODY)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk());
 
     verify(mailService, times(1)).sendHtmlMails(Mockito.any());
-
   }
 
   @Test
   public void sendErrorMail_Should_ReturnOk_WhenTemplateDescriptionIsNotFound() throws Exception {
 
-    mvc.perform(post(PATH_SEND_ERROR_MAIL)
-        .content(VALID_ERROR_REQUEST_BODY)
-        .contentType(MediaType.APPLICATION_JSON)
-        .accept(MediaType.APPLICATION_JSON))
+    mvc.perform(
+            post(PATH_SEND_ERROR_MAIL)
+                .content(VALID_ERROR_REQUEST_BODY)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk());
-
   }
 
   @Test
   public void sendErrorMail_Should_SendHtmlMail_And_ReturnOk_WhenExchange() throws Exception {
 
-    mvc.perform(post(PATH_SEND_ERROR_MAIL)
-        .content(VALID_ERROR_REQUEST_BODY)
-        .contentType(MediaType.APPLICATION_JSON)
-        .accept(MediaType.APPLICATION_JSON))
+    mvc.perform(
+            post(PATH_SEND_ERROR_MAIL)
+                .content(VALID_ERROR_REQUEST_BODY)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk());
 
     verify(mailService, times(1)).sendErrorMailDto(Mockito.any());
-
   }
-
 }

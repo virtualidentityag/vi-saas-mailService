@@ -5,9 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-/**
- * Representation for an image in a mail template
- */
+/** Representation for an image in a mail template */
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -16,5 +14,4 @@ public class TemplateImage {
 
   private String filename;
   private String filetype;
-
 }

@@ -9,9 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-/**
- * Representation for mail a mail template
- */
+/** Representation for mail a mail template */
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter

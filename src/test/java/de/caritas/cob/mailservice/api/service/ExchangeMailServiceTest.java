@@ -35,7 +35,8 @@ public class ExchangeMailServiceTest {
   public void setup() throws Exception {
     this.mailService = new ExchangeMailService();
     ReflectionTestUtils.setField(mailService, EXCHANGE_USER_FIELD_NAME, EXCHANGE_USER_VALUE);
-    ReflectionTestUtils.setField(mailService, EXCHANGE_PASSWORD_FIELD_NAME, EXCHANGE_PASSWORD_VALUE);
+    ReflectionTestUtils.setField(
+        mailService, EXCHANGE_PASSWORD_FIELD_NAME, EXCHANGE_PASSWORD_VALUE);
     ReflectionTestUtils.setField(mailService, EXCHANGE_URL_FIELD_NAME, EXCHANGE_URL_VALUE);
     ReflectionTestUtils.setField(mailService, EXCHANGE_VERSION_FIELD_NAME, EXCHANGE_VERSION_VALUE);
   }
@@ -80,17 +81,18 @@ public class ExchangeMailServiceTest {
   }
 
   @Test(expected = ExchangeMailServiceException.class)
-  public void prepareAndSendTextMail_Should_ThrowExchangeMailServiceException_When_MailUrlIsInvalid()
-      throws NoSuchFieldException, ExchangeMailServiceException {
+  public void
+      prepareAndSendTextMail_Should_ThrowExchangeMailServiceException_When_MailUrlIsInvalid()
+          throws NoSuchFieldException, ExchangeMailServiceException {
     ReflectionTestUtils.setField(mailService, EXCHANGE_URL_FIELD_NAME, "Invalid");
     mailService.prepareAndSendTextMail(RECIPIENT, SUBJECT, BODY);
   }
 
   @Test(expected = ExchangeMailServiceException.class)
-  public void prepareAndSendTextMail_Should_ThrowExchangeMailServiceException_When_ParametersAreNull()
-      throws ExchangeMailServiceException, NoSuchFieldException {
+  public void
+      prepareAndSendTextMail_Should_ThrowExchangeMailServiceException_When_ParametersAreNull()
+          throws ExchangeMailServiceException, NoSuchFieldException {
     ReflectionTestUtils.setField(mailService, "mailSender", SENDER);
     mailService.prepareAndSendTextMail(null, null, null);
   }
-
 }

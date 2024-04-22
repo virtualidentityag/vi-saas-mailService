@@ -35,12 +35,14 @@ public class TranslationService {
   @Value("${translation.management.system.enabled}")
   private boolean translationManagementSystemEnabled;
 
-  private final @NonNull TranslationManagementServiceApiClient translationManagementServiceApiClient;
+  private final @NonNull TranslationManagementServiceApiClient
+      translationManagementServiceApiClient;
 
   private final @NonNull DefaultTranslationsService defaultTranslationsService;
 
   public TranslationService(
-      TranslationManagementServiceApiClient translationManagementServiceApiClient, DefaultTranslationsService defaultTranslationsService) {
+      TranslationManagementServiceApiClient translationManagementServiceApiClient,
+      DefaultTranslationsService defaultTranslationsService) {
     this.translationManagementServiceApiClient = translationManagementServiceApiClient;
     this.defaultTranslationsService = defaultTranslationsService;
   }
@@ -51,9 +53,11 @@ public class TranslationService {
 
       return fetchTranslationAsMap(languageCode, dialect);
     } catch (JsonProcessingException ex) {
-      throw new TranslationServiceException(String.format(
-          "Json file with translations could not be parsed, translation component name: %s",
-          component), ex);
+      throw new TranslationServiceException(
+          String.format(
+              "Json file with translations could not be parsed, translation component name: %s",
+              component),
+          ex);
     }
   }
 
@@ -76,8 +80,8 @@ public class TranslationService {
       var result = fetchTranslationAsMap(languageCode, dialect);
       return result.isEmpty() ? Optional.empty() : Optional.of(result);
     } catch (JsonProcessingException e) {
-      log.warn("Error while processing json file with translations. Returning empty translations",
-          e);
+      log.warn(
+          "Error while processing json file with translations. Returning empty translations", e);
       return Optional.empty();
     }
   }
@@ -86,33 +90,37 @@ public class TranslationService {
     return fetchDefaultTranslationsFromTranslationsManagementSystem(languageCode, dialect);
   }
 
-  private String fetchDefaultTranslationsFromTranslationsManagementSystem(String languageCode, Dialect dialect) {
+  private String fetchDefaultTranslationsFromTranslationsManagementSystem(
+      String languageCode, Dialect dialect) {
     try {
-      log.info("Fetching translations. Translation management system enabled value: {}",
+      log.info(
+          "Fetching translations. Translation management system enabled value: {}",
           translationManagementSystemEnabled);
-      return translationManagementSystemEnabled ? translationManagementServiceApiClient.tryFetchTranslationsFromTranslationManagementService(
-          project, component,
-          languageCode, dialect) : defaultTranslationsService.fetchDefaultTranslations(component, languageCode,
-              dialect);
+      return translationManagementSystemEnabled
+          ? translationManagementServiceApiClient
+              .tryFetchTranslationsFromTranslationManagementService(
+                  project, component,
+                  languageCode, dialect)
+          : defaultTranslationsService.fetchDefaultTranslations(component, languageCode, dialect);
     } catch (HttpClientErrorException e) {
       if (HttpStatus.NOT_FOUND.equals(e.getStatusCode())) {
         log.warn(
             "Translations for component {}, language {} not found in weblate, returning default translations",
             component,
             languageCode);
-        return defaultTranslationsService.fetchDefaultTranslations(component, languageCode,
-            dialect);
+        return defaultTranslationsService.fetchDefaultTranslations(
+            component, languageCode, dialect);
       } else {
         log.error("Error while fetching translations from translation management service", e);
         throw e;
       }
     } catch (ResourceAccessException ex) {
-      log.error("ResourceAccessException error while fetching translations from translation management service. Will fallback to resolve default translations.");
+      log.error(
+          "ResourceAccessException error while fetching translations from translation management service. Will fallback to resolve default translations.");
       log.debug("Exception details: ", ex);
       return defaultTranslationsService.fetchDefaultTranslations(component, languageCode, dialect);
     }
   }
-
 
   private class TranslationServiceException extends RuntimeException {
 

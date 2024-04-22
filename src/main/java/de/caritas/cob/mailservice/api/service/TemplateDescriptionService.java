@@ -12,9 +12,7 @@ import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-/**
- * Service for mail templates
- */
+/** Service for mail templates */
 @Service
 public class TemplateDescriptionService {
 
@@ -37,7 +35,6 @@ public class TemplateDescriptionService {
       throws TemplateDescriptionServiceException {
 
     return Optional.of(loadTemplateDescription(templateName));
-
   }
 
   /**
@@ -53,9 +50,11 @@ public class TemplateDescriptionService {
     try {
       return mapper.readValue(templateDescriptionJson, TemplateDescription.class);
     } catch (Exception ex) {
-      throw new TemplateDescriptionServiceException(String.format(
-          "Json file with template description could not be parsed, template name: %s",
-          templateName), ex);
+      throw new TemplateDescriptionServiceException(
+          String.format(
+              "Json file with template description could not be parsed, template name: %s",
+              templateName),
+          ex);
     }
   }
 
@@ -68,16 +67,21 @@ public class TemplateDescriptionService {
   private String loadTemplateDescriptionFile(String templateName)
       throws TemplateDescriptionServiceException {
     try {
-      var inputStream = useCustomResourcesPath ? buildStreamForExternalPath(templateName)
-          : TemplateDescriptionService.class.getResourceAsStream(getTemplateFilename(templateName));
+      var inputStream =
+          useCustomResourcesPath
+              ? buildStreamForExternalPath(templateName)
+              : TemplateDescriptionService.class.getResourceAsStream(
+                  getTemplateFilename(templateName));
       assert inputStream != null;
-      final List<String> fileLines = IOUtils
-          .readLines(inputStream, StandardCharsets.UTF_8.displayName());
+      final List<String> fileLines =
+          IOUtils.readLines(inputStream, StandardCharsets.UTF_8.displayName());
       return String.join("", fileLines);
     } catch (Exception ex) {
-      throw new TemplateDescriptionServiceException(String.format(
-          "Json file with template description could not be loaded, template name: %s",
-          templateName), ex);
+      throw new TemplateDescriptionServiceException(
+          String.format(
+              "Json file with template description could not be loaded, template name: %s",
+              templateName),
+          ex);
     }
   }
 
@@ -96,5 +100,4 @@ public class TemplateDescriptionService {
   private String getTemplateFilename(String templateName) {
     return TEMPLATE_DIR + templateName.toLowerCase() + TEMPLATE_EXTENSION;
   }
-
 }

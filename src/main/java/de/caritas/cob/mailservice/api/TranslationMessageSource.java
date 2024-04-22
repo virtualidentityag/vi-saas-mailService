@@ -21,8 +21,12 @@ public class TranslationMessageSource implements MessageSource {
 
   @Override
   public String getMessage(String code, Object[] args, String defaultMessage, Locale locale) {
-    log.info("getMessage called with code: {}, args: {}, defaultMessage: {}, locale: {}", code,
-        args, defaultMessage, locale);
+    log.info(
+        "getMessage called with code: {}, args: {}, defaultMessage: {}, locale: {}",
+        code,
+        args,
+        defaultMessage,
+        locale);
     Dialect dialect = determineDialect(locale);
     return translationService.fetchTranslations(locale.getLanguage(), dialect).get(code);
   }

@@ -53,10 +53,11 @@ public class MailService {
   private Consumer<MailDTO> renderAndSendHtmlMail() {
     return mailDTO -> {
       try {
-        templateDescriptionService.getTemplateDescription(mailDTO.getTemplate()).ifPresentOrElse(
-            desc -> loadRequiredMailDataAndSendMail(mailDTO, desc),
-            () -> logAndSendErrorMessage(mailDTO)
-        );
+        templateDescriptionService
+            .getTemplateDescription(mailDTO.getTemplate())
+            .ifPresentOrElse(
+                desc -> loadRequiredMailDataAndSendMail(mailDTO, desc),
+                () -> logAndSendErrorMessage(mailDTO));
       } catch (TemplateDescriptionServiceException ex) {
         handleMailSendFailure(mailDTO, ex);
       }
@@ -64,8 +65,8 @@ public class MailService {
   }
 
   private void logAndSendErrorMessage(MailDTO mail) {
-    String errorMessage = String
-        .format("Template description %s could not be found.", mail.getTemplate());
+    String errorMessage =
+        String.format("Template description %s could not be found.", mail.getTemplate());
     LogService.logError(errorMessage);
     sendErrorMail(errorMessage);
   }
@@ -87,15 +88,15 @@ public class MailService {
     }
   }
 
-  private void sendHtmlMail(MailDTO mail, TemplateDescription templateDescription,
-      String renderedText, String subject) {
+  private void sendHtmlMail(
+      MailDTO mail, TemplateDescription templateDescription, String renderedText, String subject) {
     try {
       if (useSmtp) {
-        smtpMailService.prepareAndSendHtmlMail(mail.getEmail(), subject, renderedText,
-            templateDescription.getTemplateImages());
+        smtpMailService.prepareAndSendHtmlMail(
+            mail.getEmail(), subject, renderedText, templateDescription.getTemplateImages());
       } else {
-        exchangeMailService.prepareAndSendHtmlMail(mail.getEmail(), subject, renderedText,
-            templateDescription.getTemplateImages());
+        exchangeMailService.prepareAndSendHtmlMail(
+            mail.getEmail(), subject, renderedText, templateDescription.getTemplateImages());
       }
     } catch (SmtpMailServiceException | ExchangeMailServiceException e) {
       throw new InternalServerErrorException(
@@ -124,7 +125,8 @@ public class MailService {
 
   private void sendErrorMailWithCheckedRecipients(String body) {
     try {
-      String errorMessage = "Caritas Online Beratung: An error occurred while sending the mail via the mail service.";
+      String errorMessage =
+          "Caritas Online Beratung: An error occurred while sending the mail via the mail service.";
       if (useSmtp) {
         smtpMailService.prepareAndSendTextMail(errorRecipients, errorMessage, body);
       } else {
@@ -141,24 +143,25 @@ public class MailService {
    * @param errorMailDTO the input {@link ErrorMailDTO}
    */
   public void sendErrorMailDto(ErrorMailDTO errorMailDTO) {
-    MailDTO mailDTO = new MailDTO()
-        .template(errorMailDTO.getTemplate())
-        .email(this.errorRecipients)
-        .templateData(errorMailDTO.getTemplateData());
+    MailDTO mailDTO =
+        new MailDTO(errorMailDTO.getTemplate(), this.errorRecipients)
+            .templateData(errorMailDTO.getTemplateData());
 
     try {
-      templateDescriptionService.getTemplateDescription(mailDTO.getTemplate())
-          .ifPresent(templateDescription -> loadUnescapedMailDataAndSendMail(mailDTO,
-              templateDescription));
+      templateDescriptionService
+          .getTemplateDescription(mailDTO.getTemplate())
+          .ifPresent(
+              templateDescription ->
+                  loadUnescapedMailDataAndSendMail(mailDTO, templateDescription));
     } catch (TemplateDescriptionServiceException e) {
       handleMailSendFailure(mailDTO, e);
     }
   }
 
   private void loadUnescapedMailDataAndSendMail(MailDTO mail, TemplateDescription desc) {
-    Map<String, Object> templateData = mail.getTemplateData()
-        .stream()
-        .collect(Collectors.toMap(TemplateDataDTO::getKey, TemplateDataDTO::getValue));
+    Map<String, Object> templateData =
+        mail.getTemplateData().stream()
+            .collect(Collectors.toMap(TemplateDataDTO::getKey, TemplateDataDTO::getValue));
 
     renderAndSend(mail, desc, templateData);
   }
